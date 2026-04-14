@@ -2,45 +2,35 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="icon.png" type="image/png">
-<link rel="apple-touch-icon" href="icon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>禁煙NEON LOG カスタムPro</title>
+    <link rel="icon" href="icon.png" type="image/png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="manifest" href="manifest.json">
     <style>
         :root { --neon-blue: #00f2ff; --neon-pink: #ff007f; --dark-bg: #0d1117; }
-        body { font-family: sans-serif; background: var(--dark-bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-        .card { background: rgba(255, 255, 255, 0.05); border: 2px solid var(--neon-blue); border-radius: 30px; padding: 25px; box-shadow: 0 0 20px var(--neon-blue); max-width: 380px; width: 100%; text-align: center; position: relative; overflow: hidden; }
-        
-        /* タイマー・金額 */
-        .timer { font-size: 2.8em; font-weight: bold; margin: 10px 0; text-shadow: 0 0 10px var(--neon-blue); }
+        body { font-family: sans-serif; background: var(--dark-bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; overflow-x: hidden; }
+        .card { background: rgba(255, 255, 255, 0.05); border: 2px solid var(--neon-blue); border-radius: 30px; padding: 25px; box-shadow: 0 0 20px var(--neon-blue); max-width: 380px; width: 100%; text-align: center; }
+        .timer { font-size: 2.8em; font-weight: bold; margin: 10px 0; text-shadow: 0 0 10px var(--neon-blue); font-variant-numeric: tabular-nums; }
         .money { font-size: 2.2em; color: #4ee44e; font-weight: bold; margin-bottom: 15px; }
-
-        /* 入力エリア共通 */
         .input-group { background: rgba(255,255,255,0.08); padding: 15px; border-radius: 15px; margin-bottom: 15px; text-align: left; }
         label { font-size: 0.75em; color: var(--neon-blue); text-transform: uppercase; display: block; margin-bottom: 5px; }
-        input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #444; color: white; padding: 5px 0; outline: none; font-size: 1em; transition: 0.3s; }
-        input:focus { border-bottom: 1px solid var(--neon-blue); }
-
-        /* 進捗バー */
+        input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #444; color: white; padding: 5px 0; outline: none; font-size: 1em; }
         .progress-container { background: #333; border-radius: 10px; height: 8px; margin-top: 10px; overflow: hidden; }
-        .progress-bar { background: var(--neon-blue); height: 100%; width: 0%; transition: 0.5s; box-shadow: 0 0 10px var(--neon-blue); }
-
-        /* ボタン */
+        .progress-bar { background: var(--neon-blue); height: 100%; width: 0%; transition: 0.5s; }
         .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        button { border: none; padding: 12px; border-radius: 50px; font-size: 1em; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .start-btn { background: var(--neon-blue); color: #000; width: 100%; }
-        .share-btn { background: #1DA1F2; color: white; }
-        .reset-btn { background: transparent; color: var(--neon-pink); border: 1px solid var(--neon-pink); font-size: 0.8em; }
-
-        /* 設定切り替え */
+        button { border: none; padding: 15px; border-radius: 50px; font-size: 1em; cursor: pointer; font-weight: bold; transition: 0.3s; width: 100%; -webkit-tap-highlight-color: transparent; }
+        .start-btn { background: var(--neon-blue); color: #000; }
+        .share-btn { background: #1DA1F2; color: white; display: none; }
+        .reset-btn { background: transparent; color: var(--neon-pink); border: 1px solid var(--neon-pink); font-size: 0.8em; display: none; margin-top: 10px; }
         .settings-toggle { font-size: 0.8em; color: #888; cursor: pointer; text-decoration: underline; margin-top: 15px; display: inline-block; }
-        #settingsPanel { display: none; margin-top: 15px; border-top: 1px solid #333; pt: 15px; }
+        #settingsPanel { display: none; margin-top: 15px; border-top: 1px solid #333; padding-top: 15px; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <div style="color:#f1c40f; font-size: 0.8em; letter-spacing: 1px;">QUITTING LOG</div>
+    <div style="color:#f1c40f; font-size: 0.8em; letter-spacing: 2px;">NEON LOG PRO</div>
     <div class="timer" id="timer">00:00:00</div>
     <div class="money" id="money">¥0</div>
 
@@ -54,8 +44,8 @@
 
     <div class="btn-group">
         <button class="start-btn" id="mainBtn" onclick="startKinen()">禁煙を今すぐ開始する</button>
-        <button class="share-btn" id="shareBtn" onclick="shareX()" style="display:none;">Xで進捗を報告</button>
-        <button class="reset-btn" id="resetBtn" onclick="resetKinen()" style="display:none;">吸ってしまった（リセット）</button>
+        <button class="share-btn" id="shareBtn" onclick="shareX()">Xで進捗を報告</button>
+        <button class="reset-btn" id="resetBtn" onclick="resetKinen()">吸ってしまった（リセット）</button>
     </div>
 
     <span class="settings-toggle" onclick="toggleSettings()">喫煙データの詳細設定 ⚙️</span>
@@ -72,39 +62,76 @@
 </div>
 
 <script>
-    let startTime = localStorage.getItem('kineStartTime');
+    let startTime = null;
+    let timerInterval = null;
 
-    // 保存データの読み込み
+    // 安全にデータを保存する関数
+    function safeSave(key, val) {
+        try { localStorage.setItem(key, val); } catch (e) { console.error("Save failed", e); }
+    }
+
+    // 安全にデータを読み込む関数
+    function safeLoad(key) {
+        try { return localStorage.getItem(key); } catch (e) { return null; }
+    }
+
     function loadData() {
-        document.getElementById('goalName').value = localStorage.getItem('goalName') || "";
-        document.getElementById('goalAmount').value = localStorage.getItem('goalAmount') || "";
-        document.getElementById('pricePack').value = localStorage.getItem('pricePack') || 600;
-        document.getElementById('cigsPack').value = localStorage.getItem('cigsPack') || 20;
-        document.getElementById('dailyCigs').value = localStorage.getItem('dailyCigs') || 20;
+        startTime = safeLoad('kineStartTime');
+        document.getElementById('goalName').value = safeLoad('goalName') || "";
+        document.getElementById('goalAmount').value = safeLoad('goalAmount') || "";
+        document.getElementById('pricePack').value = safeLoad('pricePack') || 600;
+        document.getElementById('cigsPack').value = safeLoad('cigsPack') || 20;
+        document.getElementById('dailyCigs').value = safeLoad('dailyCigs') || 20;
+        updateUI();
     }
 
     function saveData() {
-        localStorage.setItem('goalName', document.getElementById('goalName').value);
-        localStorage.setItem('goalAmount', document.getElementById('goalAmount').value);
-        localStorage.setItem('pricePack', document.getElementById('pricePack').value);
-        localStorage.setItem('cigsPack', document.getElementById('cigsPack').value);
-        localStorage.setItem('dailyCigs', document.getElementById('dailyCigs').value);
+        safeSave('goalName', document.getElementById('goalName').value);
+        safeSave('goalAmount', document.getElementById('goalAmount').value);
+        safeSave('pricePack', document.getElementById('pricePack').value);
+        safeSave('cigsPack', document.getElementById('cigsPack').value);
+        safeSave('dailyCigs', document.getElementById('dailyCigs').value);
         update();
     }
 
     function startKinen() {
-        if(confirm("新しい挑戦を始めますか？")) {
-            startTime = new Date().getTime();
-            localStorage.setItem('kineStartTime', startTime);
-            location.reload();
-        }
+        startTime = new Date().getTime();
+        safeSave('kineStartTime', startTime);
+        updateUI();
+        startTimer();
     }
 
     function resetKinen() {
-        if (confirm("これまでの記録が消えてしまいますが、リセットしますか？")) {
+        if (confirm("リセットしますか？")) {
             localStorage.removeItem('kineStartTime');
-            location.reload();
+            startTime = null;
+            if(timerInterval) clearInterval(timerInterval);
+            document.getElementById('timer').innerText = "00:00:00";
+            document.getElementById('money').innerText = "¥0";
+            updateUI();
         }
+    }
+
+    function updateUI() {
+        const mainBtn = document.getElementById('mainBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        if (startTime) {
+            mainBtn.style.display = 'none';
+            shareBtn.style.display = 'block';
+            resetBtn.style.display = 'block';
+        } else {
+            mainBtn.style.display = 'block';
+            shareBtn.style.display = 'none';
+            resetBtn.style.display = 'none';
+        }
+        update();
+    }
+
+    function startTimer() {
+        if(timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(update, 1000);
     }
 
     function toggleSettings() {
@@ -117,52 +144,42 @@
         const now = new Date().getTime();
         const diff = now - startTime;
 
-        // タイマー更新
         const hours = Math.floor(diff / (1000 * 60 * 60));
         const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const secs = Math.floor((diff % (1000 * 60)) / 1000);
-        document.getElementById('timer').innerText = `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        document.getElementById('timer').innerText = 
+            String(hours).padStart(2, '0') + ":" + 
+            String(mins).padStart(2, '0') + ":" + 
+            String(secs).padStart(2, '0');
 
-        // 設定値を取得して計算
-        const price = parseFloat(document.getElementById('pricePack').value) || 0;
-        const perPack = parseFloat(document.getElementById('cigsPack').value) || 1;
-        const daily = parseFloat(document.getElementById('dailyCigs').value) || 0;
+        const price = parseFloat(document.getElementById('pricePack').value) || 600;
+        const perPack = parseFloat(document.getElementById('cigsPack').value) || 20;
+        const daily = parseFloat(document.getElementById('dailyCigs').value) || 20;
 
         const costPerMs = (price / perPack * daily) / (24 * 60 * 60 * 1000);
         const savedMoney = Math.floor(costPerMs * diff);
-        document.getElementById('money').innerText = `¥${savedMoney.toLocaleString()}`;
+        document.getElementById('money').innerText = "¥" + savedMoney.toLocaleString();
 
-        // 進捗バー更新
         const goalAmount = parseFloat(document.getElementById('goalAmount').value);
         const goalName = document.getElementById('goalName').value || "目標";
         if (goalAmount > 0) {
             let percent = Math.min((savedMoney / goalAmount) * 100, 100);
             document.getElementById('progressBar').style.width = percent + "%";
-            document.getElementById('progressText').innerText = `${goalName}まで あと ¥${Math.max(0, goalAmount - savedMoney).toLocaleString()} (${Math.floor(percent)}%)`;
+            document.getElementById('progressText').innerText = goalName + "まで あと ¥" + Math.max(0, goalAmount - savedMoney).toLocaleString() + " (" + Math.floor(percent) + "%)";
         }
     }
 
     function shareX() {
         const goalName = document.getElementById('goalName').value || "目標";
         const moneyText = document.getElementById('money').innerText;
-        const text = encodeURIComponent(`【禁煙ログ】\n現在、節約できた金額は ${moneyText}！\n「${goalName}」を目指して継続中です。\n#禁煙 #禁煙ログ`);
-        window.open(`https://twitter.com/intent/tweet?text=${text}`);
+        const text = encodeURIComponent("【禁煙ログ】\n現在 " + moneyText + " 節約中！\n「" + goalName + "」を目指して継続中です。\n#禁煙 #禁煙ログ");
+        window.open("https://twitter.com/intent/tweet?text=" + text);
     }
 
-    loadData();
-    if (startTime) {
-        document.getElementById('mainBtn').style.display = 'none';
-        document.getElementById('shareBtn').style.display = 'block';
-        document.getElementById('resetBtn').style.display = 'block';
-        setInterval(update, 1000);
-        update();
-    }
+    window.onload = function() {
+        loadData();
+        if (startTime) startTimer();
+    };
 </script>
-
-<p style="font-size: 0.7em; color: #666; margin-top: 20px; text-align: center; width: 100%;">
-  ※ボタンが反応しない場合は、SafariやChrome等の<br>ブラウザで開き直してください。
-</p>
-
 </body>
 </html>
-
